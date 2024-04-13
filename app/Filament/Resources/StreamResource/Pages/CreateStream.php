@@ -10,8 +10,4 @@ class CreateStream extends CreateRecord
 {
     protected static string $resource = StreamResource::class;
 
-    protected function getRedirectUrl(): string
-    {
-        return static::getResource()::getRedirectUrl('index');
-    }
 }
