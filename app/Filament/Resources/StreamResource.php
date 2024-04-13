@@ -25,7 +25,7 @@ class StreamResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                TextInput::make('name')->require(),
                 TextInput::make('short_name'),
             ]);
     }
