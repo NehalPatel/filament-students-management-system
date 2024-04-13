@@ -10,7 +10,7 @@ class Stream extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'name','short_name'
     ];
 
     public function divisions()
