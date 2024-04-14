@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Student;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -12,12 +12,14 @@ class StudentsExport implements FromCollection, WithMapping, WithHeadings
 {
     use Exportable;
 
+    public function __construct(public Collection $records) {}
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Student::all();
+        return $this->records;
     }
 
     public function headings(): array

@@ -17,10 +17,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentResource extends Resource
@@ -56,9 +59,25 @@ class StudentResource extends Resource
                 TextColumn::make('email')->searchable()->sortable(),
                 TextColumn::make('stream.name')->badge(),
                 TextColumn::make('division.name')->badge(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('Stream')
+                    ->label('Filter by Stream')
+                    ->indicator('Stream')
+                    ->relationship('stream', 'name'),
+
+                SelectFilter::make('Division')
+                    ->label('Filter by Division')
+                    ->indicator('Division')
+                    ->relationship('division', 'name'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
