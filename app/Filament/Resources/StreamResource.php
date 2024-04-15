@@ -21,6 +21,13 @@ class StreamResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Academic Management';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::$model::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,6 +42,11 @@ class StreamResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
+                TextColumn::make('divisions.name')
+                    ->badge(),
+                TextColumn::make('students_count')
+                    ->counts('students')
+                    ->badge(),
             ])
             ->filters([
                 //
