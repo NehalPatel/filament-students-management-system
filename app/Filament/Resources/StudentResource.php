@@ -2,29 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use App\Exports\StudentsExport;
-use App\Filament\Resources\StudentResource\Pages;
-use App\Filament\Resources\StudentResource\RelationManagers;
-use App\Models\Division;
+use Filament\Forms;
+use Filament\Tables;
 use App\Models\Stream;
 use App\Models\Student;
-use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
+use App\Models\Division;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Exports\StudentsExport;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\StudentResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StudentResource\RelationManagers;
 
 class StudentResource extends Resource
 {
@@ -55,10 +55,16 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('email')->searchable()->sortable(),
-                TextColumn::make('stream.name')->badge(),
-                TextColumn::make('division.name')->badge(),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('stream.name')
+                    ->badge(),
+                TextColumn::make('division.name')
+                    ->badge(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -69,15 +75,33 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('Stream')
-                    ->label('Filter by Stream')
-                    ->indicator('Stream')
-                    ->relationship('stream', 'name'),
-
-                SelectFilter::make('Division')
-                    ->label('Filter by Division')
-                    ->indicator('Division')
-                    ->relationship('division', 'name'),
+                Filter::make('stream-section-filter')
+                    ->form([
+                        Select::make('stream_id')
+                            ->label('Filter By Stream')
+                            ->placeholder('Select a Stream')
+                            ->options(
+                                Stream::pluck('name', 'id')->toArray(),
+                            ),
+                        Select::make('division_id')
+                            ->label('Filter By Division')
+                            ->placeholder('Select a Division')
+                            ->options(function (Get $get) {
+                                $streamId = $get('stream_id');
+                                if ($streamId) {
+                                    return Division::where('stream_id', $streamId)
+                                        ->pluck('name', 'id')
+                                        ->toArray();
+                                }
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['stream_id'], function ($query) use ($data) {
+                            return $query->where('stream_id', $data['stream_id']);
+                        })->when($data['division_id'], function ($query) use ($data) {
+                            return $query->where('division_id', $data['division_id']);
+                        });
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
