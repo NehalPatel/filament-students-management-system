@@ -22,6 +22,7 @@ class StreamResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Academic Management';
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
     {
@@ -32,7 +33,9 @@ class StreamResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->require(),
+                TextInput::make('name')
+                    ->unique(ignoreRecord:true)
+                    ->required(),
                 TextInput::make('short_name'),
             ]);
     }

@@ -10,20 +10,23 @@ use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 
 class DivisionResource extends Resource
 {
     protected static ?string $model = Division::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
     protected static ?string $navigationGroup = 'Academic Management';
+    protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string
     {
@@ -35,6 +38,9 @@ class DivisionResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->unique(ignoreRecord:true, modifyRuleUsing: function(Get $get, Unique $rule){
+                        return $rule->where('stream_id', $get('stream_id'));
+                    })
                     ->required(),
                 Select::make('stream_id')
                     ->options(Stream::pluck('name', 'id'))
