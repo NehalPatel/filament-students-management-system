@@ -64,14 +64,27 @@ class StudentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->description(fn(Student $record) : ?string => $record?->email ?? null)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('stream.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('spdid')
+                    ->label('SPDID')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('mobile')
+                    ->label('Mobile')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('enrollment_no')
+                    ->label('Enrollment No')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('stream.short_name')
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->badge(),
                 TextColumn::make('division.name')
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->badge(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -86,6 +99,7 @@ class StudentResource extends Resource
                 Filter::make('stream-section-filter')
                     ->form([
                         Select::make('stream_id')
+                            ->live()
                             ->label('Filter By Stream')
                             ->placeholder('Select a Stream')
                             ->options(
@@ -123,6 +137,34 @@ class StudentResource extends Resource
                         ->icon('heroicon-o-document-arrow-down')
                         ->action(function(Collection $records){
                             return Excel::download(new StudentsExport($records), 'students.xlsx');
+                        }),
+                    BulkAction::make('migrate')
+                        ->label('Migrate Students')
+                        ->icon('heroicon-o-bars-arrow-up')
+                        ->form([
+                            Select::make('stream_id')
+                                ->options(Stream::all()->pluck('name', 'id'))
+                                ->live()
+                                ->label('Stream'),
+                            Select::make('division_id')
+                                ->live()
+                                ->options(function (Get $get) {
+                                        return Division::where('stream_id', $get('stream_id'))->pluck('name', 'id')->toArray();
+                                    })
+                                ->label('Division'),
+                        ])
+                        // ->modalSubmitActionLabel('Migrate Student(s)')
+                        ->requiresConfirmation()
+                        ->action(function(array $data, Collection $records){
+                            $stream_id = (int) $data['stream_id'];
+                            $division_id = (int) $data['division_id'];
+
+                            $recordIds = $records->pluck('id')->toArray();
+
+                            Student::whereIn('id', $recordIds)->update([
+                                'stream_id' => $stream_id,
+                                'division_id' => $division_id,
+                            ]);
                         })
                 ]),
             ]);

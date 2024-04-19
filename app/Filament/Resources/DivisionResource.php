@@ -14,6 +14,7 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -59,8 +60,11 @@ class DivisionResource extends Resource
                     ->counts('students')
                     ->badge(),
             ])
+            ->defaultSort('name')
             ->filters([
-                //
+                SelectFilter::make('stream_id')
+                    ->options(Stream::all()->pluck('short_name', 'id'))
+                    ->label('Stream'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

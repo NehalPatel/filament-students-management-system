@@ -17,6 +17,9 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email');
             $table->string('password')->nullable();
+            $table->string('mobile', 20)->nullable();
+            $table->string('spdid', 20)->nullable();
+            $table->string('enrollment_no', 20)->nullable();
             $table->timestamps();
         });
     }

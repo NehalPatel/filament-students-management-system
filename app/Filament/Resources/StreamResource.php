@@ -51,6 +51,7 @@ class StreamResource extends Resource
                     ->counts('students')
                     ->badge(),
             ])
+            ->defaultSort('name')
             ->filters([
                 //
             ])

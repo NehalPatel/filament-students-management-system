@@ -13,6 +13,8 @@ class StudentsImport implements ToModel, WithHeadingRow
 {
     use Importable;
 
+    public function __construct(public ?int $stream_id, public ?int $divsion_id) {}
+
     /**
     * @param array $row
     *
@@ -20,13 +22,18 @@ class StudentsImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $stream_id = self::getStreamId($row['stream']);
+        //$stream_id = self::getStreamId($row['stream']);
 
         return new Student([
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'stream_id' => $stream_id,
-            'division_id' => self::getDivisionId($stream_id, $row['division']),
+            'name' => $row['studentname'],
+            'email' => $row['emailid'],
+            'password' => $row['mobileno'],
+            'mobile' => $row['mobileno'],
+            'spdid' => $row['spdid'],
+            'enrollment_no' => $row['enrolmentnumber'],
+            'stream_id' => $this->stream_id,
+            // 'division_id' => self::getDivisionId($stream_id, $row['division']),
+            'division_id' => $this->divsion_id,
         ]);
     }
 

@@ -17,7 +17,10 @@ class Student extends Authenticatable
         'division_id',
         'name',
         'email',
-        'password'
+        'password',
+        'mobile',
+        'spdid',
+        'enrollment_no'
     ];
 
     protected $casts = [
