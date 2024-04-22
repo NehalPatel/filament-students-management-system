@@ -12,16 +12,18 @@ class Student extends Authenticatable
 
     protected string $guard = 'student';
 
-    protected $fillable = [
-        'stream_id',
-        'division_id',
-        'name',
-        'email',
-        'password',
-        'mobile',
-        'spdid',
-        'enrollment_no'
-    ];
+    // protected $fillable = [
+    //     'stream_id',
+    //     'division_id',
+    //     'name',
+    //     'email',
+    //     'password',
+    //     'mobile',
+    //     'spdid',
+    //     'enrollment_no'
+    // ];
+
+    protected $guarded = ['id'];
 
     protected $casts = [
         'password' => 'hashed',

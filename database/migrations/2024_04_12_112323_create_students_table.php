@@ -20,6 +20,9 @@ return new class extends Migration {
             $table->string('mobile', 20)->nullable();
             $table->string('spdid', 20)->nullable();
             $table->string('enrollment_no', 20)->nullable();
+            $table->string('address')->nullable();
+            $table->string('city', 20)->nullable();
+            $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
     }
