@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\Student\StudentResource;
-use App\Models\Student;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Stream\StreamResource;
+use App\Models\Stream;
 use Illuminate\Http\Request;
 
-class StudentsController extends ApiController
+class StreamController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +18,9 @@ class StudentsController extends ApiController
 
         //$students = Student::paginate($limit);
 
-        $students = Student::paginate($limit);
+        $streams = Stream::paginate($limit);
 
-        return StudentResource::collection($students);
+        return StreamResource::collection($streams);
     }
 
     /**

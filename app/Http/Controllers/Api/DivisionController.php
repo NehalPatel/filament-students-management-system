@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\Student\StudentResource;
-use App\Models\Student;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Division\DivisionResource;
+use App\Models\Division;
 use Illuminate\Http\Request;
 
-class StudentsController extends ApiController
+class DivisionController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,9 @@ class StudentsController extends ApiController
     {
         $limit = $request->input('limit') ?: $this->limit;
 
-        //$students = Student::paginate($limit);
+        $divisions = Division::paginate($limit);
 
-        $students = Student::paginate($limit);
-
-        return StudentResource::collection($students);
+        return DivisionResource::collection($divisions);
     }
 
     /**
