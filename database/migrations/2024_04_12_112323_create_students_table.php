@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('enrollment_no', 20)->nullable();
             $table->string('address')->nullable();
             $table->string('city', 20)->nullable();
+            $table->string('gender', 10)->nullable();
             $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
