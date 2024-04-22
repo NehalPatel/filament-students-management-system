@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Student;
 
+use App\Http\Resources\Division\DivisionResource;
+use App\Http\Resources\Stream\StreamResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class StudentsResource extends ResourceCollection
+class StudentResource extends JsonResource
 {
     /**
-     * Transform the resource collection into an array.
+     * Transform the resource into an array.
      *
-     * @return array<int|string, mixed>
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
@@ -25,7 +27,8 @@ class StudentsResource extends ResourceCollection
             'city'            => $this->city,
             'gender'          => $this->gender,
             'profile_picture' => $this->profile_picture,
-            // 'stream_id'     => $this->stream->id,
+            'stream' => new StreamResource($this->stream),
+            'division' => new DivisionResource($this->division),
         ];
     }
 }

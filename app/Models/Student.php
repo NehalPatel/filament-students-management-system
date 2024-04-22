@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Student extends Authenticatable
@@ -29,12 +30,12 @@ class Student extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function stream()
+    public function stream(): BelongsTo
     {
         return $this->belongsTo(Stream::class, 'stream_id');
     }
 
-    public function division()
+    public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);
     }

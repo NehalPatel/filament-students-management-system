@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\Student\StudentResource;
-use App\Models\Student;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class StudentsController extends ApiController
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $limit = $request->input('limit') ?: $this->limit;
+        // $user = User::first();
+        // return new UserResource($user);
 
-        //$students = Student::paginate($limit);
-
-        $students = Student::paginate();
-
-        return StudentResource::collection($students);
+        $users = User::all();
+        // return new UserCollection($users);
+        return UserResource::collection($users);
     }
 
     /**

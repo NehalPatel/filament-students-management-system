@@ -54,13 +54,16 @@ class DivisionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('stream.name'),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('stream.name')
+                    ->sortable(),
                 TextColumn::make('students_count')
                     ->counts('students')
                     ->badge(),
             ])
-            ->defaultSort('name')
+            ->defaultSort('stream.name')
             ->filters([
                 SelectFilter::make('stream_id')
                     ->options(Stream::all()->pluck('short_name', 'id'))
