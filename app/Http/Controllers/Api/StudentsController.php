@@ -15,9 +15,32 @@ class StudentsController extends ApiController
     {
         $limit = $request->input('limit') ?: $this->limit;
 
-        //$students = Student::paginate($limit);
+        $query = Student::query();
 
-        $students = Student::paginate($limit);
+        $stream_id = $request->input('stream_id')?:null;
+        if($stream_id)
+            $query->where('stream_id', $stream_id);
+
+        $division_id = $request->input('division_id')?:null;
+        if($division_id)
+            $query->where('division_id', $division_id);
+
+        $q = $request->query('q')?:null;
+        if($q){
+            $query->where(function ($query) use ($q){
+                return $query->where('name', 'like', '%'.$q.'%')
+                    ->orWhere('email', 'like', '%'.$q.'%')
+                    ->orWhere('mobile', 'like', '%'.$q.'%')
+                    ->orWhere('spdid', 'like', '%'.$q.'%')
+                    ->orWhere('enrollment_no', 'like', '%'.$q.'%');
+            });
+        }
+
+        $sortBy  = $request->input('sort_by') ? : $this->sort['sort_by'];
+        $sortDir  = $request->input('sort_direction') ? : $this->sort['sort_direction'];
+        $query->orderBy($sortBy, $sortDir);
+
+        $students = $query->paginate($limit);
 
         return StudentResource::collection($students);
     }
@@ -41,9 +64,9 @@ class StudentsController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Student $student)
     {
-        //
+        return new StudentResource($student);
     }
 
     /**

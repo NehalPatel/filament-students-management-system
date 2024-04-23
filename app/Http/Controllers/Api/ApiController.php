@@ -14,7 +14,7 @@ class ApiController extends Controller{
      */
     protected $limit = 10;
 
-    protected  $sort = ['field' => 'id','sort' => 'desc'];
+    protected  $sort = ['sort_by' => 'id','sort_direction' => 'desc'];
 
     protected  $search = ['searchQuery' => ''];
 }

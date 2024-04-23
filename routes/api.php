@@ -10,6 +10,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/users', [App\Http\Controllers\Api\UserController::class, 'index']);
 
-Route::get('/streams', [App\Http\Controllers\Api\StreamController::class, 'index']);
-Route::get('/divisions', [App\Http\Controllers\Api\DivisionController::class, 'index']);
-Route::get('/students', [App\Http\Controllers\Api\StudentsController::class, 'index']);
+Route::resource('/streams', App\Http\Controllers\Api\StreamController::class);
+Route::resource('/divisions', App\Http\Controllers\Api\DivisionController::class);
+
+Route::resource('/students', App\Http\Controllers\Api\StudentsController::class);

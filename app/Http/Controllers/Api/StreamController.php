@@ -16,10 +16,21 @@ class StreamController extends ApiController
     {
         $limit = $request->input('limit') ?: $this->limit;
 
-        //$students = Student::paginate($limit);
+        $query = Stream::query();
 
-        $streams = Stream::paginate($limit);
+        $q = $request->query('q')?:null;
+        if($q){
+            $query->where(function ($query) use ($q){
+                return $query->where('name', 'like', '%'.$q.'%')
+                    ->orWhere('short_name', 'like', '%'.$q.'%');
+            });
+        }
 
+        $sortBy  = $request->input('sort_by') ? : $this->sort['sort_by'];
+        $sortDir  = $request->input('sort_direction') ? : $this->sort['sort_direction'];
+        $query->orderBy($sortBy, $sortDir);
+
+        $streams = $query->paginate($limit);
         return StreamResource::collection($streams);
     }
 
